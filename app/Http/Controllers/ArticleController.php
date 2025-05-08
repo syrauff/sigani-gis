@@ -21,7 +21,7 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        
+
         return view('articles.create');
     }
 
@@ -30,7 +30,20 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'author' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slug' => 'required|string|max:255|unique:articles,slug',
+            'published_at' => 'nullable|date',
+        ]);
+
+        $article = new Article($request->all());
+        $article->save();
+
+        return redirect()->route('articles.index')->with('success', 'Article created successfully.');
     }
 
     /**

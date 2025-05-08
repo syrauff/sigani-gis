@@ -7,6 +7,33 @@
     <title>Document</title>
 </head>
 <body>
-    Ini article
+    <h1>Article</h1>
+    <a href="{{ route('articles.create') }}">Create</a>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($articles as $article)
+                <tr>
+                    <td>{{ $article->id }}</td>
+                    <td>{{ $article->title }}</td>
+                    <td>{{ $article->content }}</td>
+                    <td>
+                        <a href="{{ route('articles.edit', $article->id) }}">Edit</a> |
+                        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
 </body>
 </html>
