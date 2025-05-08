@@ -15,6 +15,11 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Content</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Image</th>
+                <th>Slug</th>
+                <th>Published At</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -24,6 +29,11 @@
                     <td>{{ $article->id }}</td>
                     <td>{{ $article->title }}</td>
                     <td>{{ $article->content }}</td>
+                    <td>{{ $article->author }}</td>
+                    <td>{{ $article->category }}</td>
+                    <td><img src="{{ asset('storage/' . $article->image) }}" alt="Image" width="100"></td>
+                    <td>{{ $article->slug }}</td>
+                    <td>{{ $article->published_at }}</td>
                     <td>
                         <a href="{{ route('articles.edit', $article->id) }}">Edit</a> |
                         <form action="{{ route('articles.destroy', $article->id) }}" method="POST" style="display:inline;">

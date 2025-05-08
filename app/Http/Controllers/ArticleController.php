@@ -40,7 +40,23 @@ class ArticleController extends Controller
             'published_at' => 'nullable|date',
         ]);
 
-        $article = new Article($request->all());
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+
+        } else {
+            $imagePath = null;
+        }
+
+        $article = new Article([
+        'title' => $request->title,
+        'content' => $request->content,
+        'author' => $request->author,
+        'category' => $request->category,
+        'slug' => $request->slug,
+        'published_at' => $request->published_at,
+        'image' => $imagePath,
+        ]);
+
         $article->save();
 
         return redirect()->route('articles.index')->with('success', 'Article created successfully.');
