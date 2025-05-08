@@ -83,7 +83,25 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+        $article = Article::findOrFail($article->id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'author' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'slug' => 'required|string|max:255|unique:articles,slug,' . $article->id,
+            'published_at' => 'nullable|date',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $validated['image'] = $imagePath;
+        }
+
+        $article->update($validated);
+        return redirect()->route('articles.index')->with('success', 'Article updated successfully.');
     }
 
     /**
