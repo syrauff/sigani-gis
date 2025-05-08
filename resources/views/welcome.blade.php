@@ -14,7 +14,11 @@
     crossorigin=""></script>
     
     <style>
-        #map { height: 600px; }
+        #map { 
+            height: 600px;
+            width: 1200px;
+            margin: 0 auto;
+        }
         .info {
             padding: 6px 8px;
             background: white;
