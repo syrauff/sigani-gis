@@ -91,7 +91,9 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+
           $request->validate([
+
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'author' => 'required|string|max:255',
@@ -129,7 +131,6 @@ class ArticleController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('article.edit', $article->slug)->with('error', 'Failed to update article: ' . $e->getMessage());
         }
-    
     }
 
     /**
