@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
@@ -57,9 +59,11 @@ class ArticleController extends Controller
         'image' => $imagePath,
         ]);
 
+        // dd($article);
+
         $article->save();
 
-        return redirect()->route('articles.index')->with('success', 'Article created successfully.');
+        return redirect()->route('article.index')->with('success', 'Article created successfully.');
     }
 
     /**
@@ -67,7 +71,11 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        $articles = Article::whereNotNull('published_at')
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+        return view('articles.show', compact('article', 'articles'));
     }
 
     /**
@@ -83,25 +91,46 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        $article = Article::findOrFail($article->id);
 
-        $validated = $request->validate([
+          $request->validate([
+
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'author' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'slug' => 'required|string|max:255|unique:articles,slug,' . $article->id,
+            'slug' => 'required|string|max:255|unique:articles,slug',
             'published_at' => 'nullable|date',
-        ]);
+          ]);
 
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-            $validated['image'] = $imagePath;
+          try {
+            $data = [
+                'title' => $request->title,
+                'content' => $request->content,
+                'author' => $request->author,
+                'category' => $request->category,
+                'slug' => $request->slug ?? Str::slug($request->title),
+                'published_at' => $request->published_at,
+            ];
+
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($article->image) {
+                    Storage::disk('public')->delete($article->image);
+                }
+                // Store new image
+                $data['image'] = $request->file('image')->store('images', 'public');
+            } else {
+                // Keep existing image
+                $data['image'] = $article->image;
+            }
+
+            $article->update($data);
+
+            return redirect()->route('article.index')->with('success', 'Article updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('article.edit', $article->slug)->with('error', 'Failed to update article: ' . $e->getMessage());
         }
-
-        $article->update($validated);
-        return redirect()->route('articles.index')->with('success', 'Article updated successfully.');
     }
 
     /**
@@ -109,6 +138,7 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $article->delete();
+        return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
     }
 }
