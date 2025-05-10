@@ -6,6 +6,9 @@ use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PortalController::class, 'index'])->name('main');
+Route::get('/all-news', [PortalController::class, 'allNews'])->name('all-news');
+Route::get('/article-view/{slug}', [PortalController::class, 'articleView'])->name('article_view');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

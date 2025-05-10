@@ -71,7 +71,11 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        $articles = Article::whereNotNull('published_at')
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+        return view('articles.show', compact('article', 'articles'));
     }
 
     /**

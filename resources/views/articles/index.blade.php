@@ -29,7 +29,7 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Author</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Category</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Image</th>
-                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Slug</th>
+                    
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Published At</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Action</th>
                         </tr>
@@ -42,21 +42,37 @@
                                 <td class="px-4 py-3 text-sm text-gray-700">{{ Str::limit($article->content, 50) }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-700">{{ $article->author }}</td>
                                 <td class="px-4 py-3 text-sm text-gray-700">{{ $article->category }}</td>
-                                <td class="px-4 py-3">
+                                <td class="px-1 py-3">
                                     <img src="{{ asset('storage/' . $article->image) }}" alt="Image" class="w-20 h-14 object-cover rounded">
                                 </td>
-                                <td class="px-4 py-3 text-sm text-gray-700">{{ $article->slug }}</td>
+                                
                                 <td class="px-4 py-3 text-sm text-gray-700">{{ $article->published_at }}</td>
                                 <td class="px-4 py-3 text-sm">
-                                    <div class="flex space-x-2">
-                                        <a href="{{ route('article.edit', $article->id) }}" class="text-blue-600 hover:underline">Edit</a>
+                                    <div class="flex justify-between items-center">
+                                        {{-- View --}}
+                                        <a href="{{ route('article.show', $article->id) }}" class="text-gray-600 hover:text-blue-600 flex items-center mx-1 space-x-1">
+                                            <i class="fas fa-eye"></i>
+                                            
+                                        </a>
+                                        
+                                        {{-- Edit --}}
+                                        <a href="{{ route('article.edit', $article->id) }}" class="text-blue-600 hover:text-blue-800 flex items-center mx-1 space-x-1">
+                                            <i class="fas fa-edit"></i>
+                                            
+                                        </a>
+
+                                        {{-- Delete --}}
                                         <form action="{{ route('article.destroy', $article->id) }}" method="POST" onsubmit="return confirm('Are you sure?')" class="inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:underline">Delete</button>
+                                            <button type="submit" class="text-red-600 hover:text-red-800 flex items-center mx-1 space-x-1">
+                                                <i class="fas fa-trash-alt"></i>
+                                                
+                                            </button>
                                         </form>
                                     </div>
                                 </td>
+
                             </tr>
                         @endforeach
                     </tbody>
