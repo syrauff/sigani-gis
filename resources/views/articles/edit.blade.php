@@ -1,23 +1,4 @@
-<<<<<<< HEAD
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <title>Document</title>
-</head>
-<body>
-    <form action="{{ route('articles.update', $article->slug) }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT') {{-- Method spoofing untuk update --}}
-        
-        {{-- Judul --}}
-        <div class="mb-3">
-            <label for="title" class="form-label">Judul</label>
-            <input type="text" name="title" id="title" class="form-control" value="{{ old('title', $article->title) }}" required>
-=======
+
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center space-x-2">
@@ -29,7 +10,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Buat Artikel Baru') }}
             </h2>
->>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
+
         </div>
     </x-slot>
 

@@ -5,10 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-<<<<<<< HEAD
-=======
 use Illuminate\Support\Str;
->>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
 
 class ArticleController extends Controller
 {
@@ -94,13 +91,8 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-<<<<<<< HEAD
-        $validated = $request->validate([
-=======
-
+      
           $request->validate([
-
->>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'author' => 'required|string|max:255',
@@ -110,17 +102,6 @@ class ArticleController extends Controller
             'published_at' => 'nullable|date',
           ]);
 
-<<<<<<< HEAD
-        // Validasi dan proses file baru
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($article->image && Storage::disk('public')->exists($article->image)) {
-                Storage::disk('public')->delete($article->image);
-            }
-            
-            // Upload gambar baru
-            $validated['image'] = $request->file('image')->store('images', 'public');
-=======
           try {
             $data = [
                 'title' => $request->title,
@@ -148,7 +129,7 @@ class ArticleController extends Controller
             return redirect()->route('article.index')->with('success', 'Article updated successfully.');
         } catch (\Exception $e) {
             return redirect()->route('article.edit', $article->slug)->with('error', 'Failed to update article: ' . $e->getMessage());
->>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
+
         }
     }
 
@@ -157,7 +138,6 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-<<<<<<< HEAD
         // Hapus gambar dari storage jika ada
         if ($article->image && Storage::disk('public')->exists($article->image)) {
             Storage::disk('public')->delete($article->image);
@@ -165,11 +145,6 @@ class ArticleController extends Controller
 
         // Hapus record dari database
         $article->delete();
-
-        return redirect()->route('articles.index')->with('success', 'Artikel berhasil dihapus.');
-=======
-        $article->delete();
         return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
->>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
     }
 }
