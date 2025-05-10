@@ -8,7 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{{ route('articles.update', $article->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('articles.update', $article->slug) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT') {{-- Method spoofing untuk update --}}
         

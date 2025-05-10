@@ -35,8 +35,8 @@
                     <td>{{ $article->slug }}</td>
                     <td>{{ $article->published_at }}</td>
                     <td>
-                        <a href="{{ route('articles.edit', $article->id) }}">Edit</a> |
-                        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" style="display:inline;">
+                        <a href="{{ route('articles.edit', $article->slug) }}">Edit</a> |
+                        <form action="{{ route('articles.destroy', $article->slug) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Delete</button>

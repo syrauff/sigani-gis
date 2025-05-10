@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -83,8 +84,6 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        $article = Article::findOrFail($article->id);
-
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -95,9 +94,15 @@ class ArticleController extends Controller
             'published_at' => 'nullable|date',
         ]);
 
+        // Validasi dan proses file baru
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-            $validated['image'] = $imagePath;
+            // Hapus gambar lama jika ada
+            if ($article->image && Storage::disk('public')->exists($article->image)) {
+                Storage::disk('public')->delete($article->image);
+            }
+            
+            // Upload gambar baru
+            $validated['image'] = $request->file('image')->store('images', 'public');
         }
 
         $article->update($validated);
@@ -109,6 +114,14 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        // Hapus gambar dari storage jika ada
+        if ($article->image && Storage::disk('public')->exists($article->image)) {
+            Storage::disk('public')->delete($article->image);
+        }
+
+        // Hapus record dari database
+        $article->delete();
+
+        return redirect()->route('articles.index')->with('success', 'Artikel berhasil dihapus.');
     }
 }
