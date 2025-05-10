@@ -14,7 +14,7 @@
     crossorigin=""></script>
     
     <style>
-        #map { 
+        #mapW { 
             height: 600px;
             width: 1200px;
             margin: 0 auto;
@@ -38,13 +38,13 @@
 </head>
 <body>
 
-    <div id="map"></div>
+    <div id="mapW"></div>
 
     {{-- Leaflet JS --}}
     
 
     <script>
-        var map = L.map('map').setView([0.7203877454558969, 122.47458474464645], 10);
+        var map = L.map('mapW').setView([0.7203877454558969, 122.47458474464645], 10);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,7 +84,7 @@
             return colorMap[kategori];
         }
 
-        function style(feature) {
+        function geoStyle(feature) {
             return {
             fillColor: getColorByKategori(feature.properties.J_Tanam),
             weight: 1,
@@ -177,7 +177,7 @@
             .then(response => response.json())
             .then(data => {
                 geojson = L.geoJSON(data, {
-                    style: style,
+                    style: geoStyle,
                     onEachFeature: onEachFeature
                 }).addTo(map);
 

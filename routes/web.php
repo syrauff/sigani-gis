@@ -6,6 +6,9 @@ use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PortalController::class, 'index'])->name('main');
+Route::get('/welcome', function () {
+    return view('welcome');
+})->name('welcome');
 Route::get('/all-news', [PortalController::class, 'allNews'])->name('all-news');
 Route::get('/article-view/{slug}', [PortalController::class, 'articleView'])->name('article_view');
 
