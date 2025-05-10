@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+<<<<<<< HEAD
+=======
+use Illuminate\Support\Str;
+>>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
 
 class ArticleController extends Controller
 {
@@ -58,9 +62,11 @@ class ArticleController extends Controller
         'image' => $imagePath,
         ]);
 
+        // dd($article);
+
         $article->save();
 
-        return redirect()->route('articles.index')->with('success', 'Article created successfully.');
+        return redirect()->route('article.index')->with('success', 'Article created successfully.');
     }
 
     /**
@@ -68,7 +74,11 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        $articles = Article::whereNotNull('published_at')
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+        return view('articles.show', compact('article', 'articles'));
     }
 
     /**
@@ -84,16 +94,23 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+<<<<<<< HEAD
         $validated = $request->validate([
+=======
+
+          $request->validate([
+
+>>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'author' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'slug' => 'required|string|max:255|unique:articles,slug,' . $article->id,
+            'slug' => 'required|string|max:255|unique:articles,slug',
             'published_at' => 'nullable|date',
-        ]);
+          ]);
 
+<<<<<<< HEAD
         // Validasi dan proses file baru
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
@@ -103,10 +120,36 @@ class ArticleController extends Controller
             
             // Upload gambar baru
             $validated['image'] = $request->file('image')->store('images', 'public');
-        }
+=======
+          try {
+            $data = [
+                'title' => $request->title,
+                'content' => $request->content,
+                'author' => $request->author,
+                'category' => $request->category,
+                'slug' => $request->slug ?? Str::slug($request->title),
+                'published_at' => $request->published_at,
+            ];
 
-        $article->update($validated);
-        return redirect()->route('articles.index')->with('success', 'Article updated successfully.');
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($article->image) {
+                    Storage::disk('public')->delete($article->image);
+                }
+                // Store new image
+                $data['image'] = $request->file('image')->store('images', 'public');
+            } else {
+                // Keep existing image
+                $data['image'] = $article->image;
+            }
+
+            $article->update($data);
+
+            return redirect()->route('article.index')->with('success', 'Article updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('article.edit', $article->slug)->with('error', 'Failed to update article: ' . $e->getMessage());
+>>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
+        }
     }
 
     /**
@@ -114,6 +157,7 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+<<<<<<< HEAD
         // Hapus gambar dari storage jika ada
         if ($article->image && Storage::disk('public')->exists($article->image)) {
             Storage::disk('public')->delete($article->image);
@@ -123,5 +167,9 @@ class ArticleController extends Controller
         $article->delete();
 
         return redirect()->route('articles.index')->with('success', 'Artikel berhasil dihapus.');
+=======
+        $article->delete();
+        return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
+>>>>>>> e187f3f659f9985c7d1c33182d61e7e399fff100
     }
 }

@@ -1,65 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-    <title>Document</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Buat Artikel Baru</h1>
-    
-        <form action="{{ route('articles.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-    
-            {{-- Judul --}}
-            <div class="mb-3">
-                <label for="title" class="form-label">Judul</label>
-                <input type="text" name="title" id="title" class="form-control" required>
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex items-center space-x-2">
+            <a href="{{ route('article.index') }}" class="text-gray-600 hover:text-gray-800">
+                <!-- Ikon panah kiri -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Buat Artikel Baru') }}
+            </h2>
+        </div>
+    </x-slot>
+
+
+    <div class="py-6">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white p-6 shadow-md rounded-lg">
+                <form action="{{ route('article.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="mb-4">
+                        <label for="title" class="block text-gray-700 font-medium mb-2">Judul</label>
+                        <input type="text" name="title" id="title" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500" required>
+                        @error('title')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="content" class="block text-gray-700 font-medium mb-2">Konten</label>
+                        <textarea name="content" id="content" rows="5" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500" required></textarea>
+                        @error('content')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="author" class="block text-gray-700 font-medium mb-2">Penulis</label>
+                        <input type="text" name="author" id="author" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500" required>
+                         @error('author')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror    
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="category" class="block text-gray-700 font-medium mb-2">Kategori</label>
+                        <input type="text" name="category" id="category" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500" required>
+                        @error('category')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="published_at" class="block text-sm font-medium text-gray-700 my-2">Tanggal Publikasi</label>
+                        <input 
+                            type="datetime-local" 
+                            id="published_at" 
+                            name="published_at" 
+                            class="w-full p-2 border border-gray-300 rounded-md" 
+                            required 
+                            value="{{ date('Y-m-d\TH:i') }}" />
+                        @error('published_at')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="slug" class="block text-gray-700 font-medium mb-2">Slug (Otomatis dari judul)</label>
+                        <input type="text" name="slug" id="slug" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500" required readonly>
+                        @error('slug') <p class="mt-2 text-sm text-red-600">{{ $message }}</p> @enderror
+                    </div>  
+
+
+                    <div class="mb-6">
+                        <label for="image" class="block text-gray-700 font-medium mb-2">Gambar</label>
+                        <input type="file" name="image" id="image" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring focus:ring-blue-500">
+                        @error('image')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="flex justify-end">
+                        <x-primary-button>
+                            {{ __('Simpan') }}
+                        </x-primary-button>
+                    </div>
+                </form>
             </div>
-    
-            {{-- Konten --}}
-            <div class="mb-3">
-                <label for="content" class="form-label">Konten</label>
-                <textarea name="content" id="content" rows="5" class="form-control" required></textarea>
-            </div>
-    
-            {{-- Penulis --}}
-            <div class="mb-3">
-                <label for="author" class="form-label">Penulis</label>
-                <input type="text" name="author" id="author" class="form-control" required>
-            </div>
-    
-            {{-- Kategori --}}
-            <div class="mb-3">
-                <label for="category" class="form-label">Kategori</label>
-                <input type="text" name="category" id="category" class="form-control" required>
-            </div>
-    
-            {{-- Gambar --}}
-            <div class="mb-3">
-                <label for="image" class="form-label">Gambar (opsional)</label>
-                <input type="file" name="image" id="image" class="form-control">
-            </div>
-    
-            {{-- Slug --}}
-            <div class="mb-3">
-                <label for="slug" class="form-label">Slug</label>
-                <input type="text" name="slug" id="slug" class="form-control" required>
-            </div>
-    
-            {{-- Tanggal Publikasi --}}
-            <div class="mb-3">
-                <label for="published_at" class="form-label">Tanggal Publikasi</label>
-                <input type="date" name="published_at" id="published_at" class="form-control">
-            </div>
-    
-            {{-- Tombol Submit --}}
-            <button type="submit" class="btn btn-primary">Simpan Artikel</button>
-        </form>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
-</body>
-</html>
+    {{-- Script untuk membuat slug otomatis --}}
+    <script>
+        document.getElementById('title').addEventListener('input', function () {
+            const title = this.value;
+            const slug = title
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, '')    // Hapus karakter aneh
+                .replace(/\s+/g, '-')            // Ganti spasi jadi strip
+                .replace(/-+/g, '-');            // Hapus strip berulang
+            document.getElementById('slug').value = slug;
+        });
+    </script>
+</x-app-layout>
