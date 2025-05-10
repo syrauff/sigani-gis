@@ -21,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        parent::boot();
+
+        // Binding model Article dengan slug
+        Route::bind('article', function ($value) {
+            return Article::where('slug', $value)->firstOrFail();
+        });
     }
 }
