@@ -521,83 +521,47 @@
         <div class="container mx-auto px-6">
             <h2 class="font-poppins font-semibold text-3xl text-center mb-8 text-primary">Berita Terkini</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @forelse ($articles as $arts)
                 <div class="bg-white rounded-lg shadow-lg overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: 0.1s;">
                     <div class="h-48 bg-green-100 relative">
-                        <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                            <rect width="400" height="200" fill="#e8f5e9"></rect>
-                            <path d="M0,150 Q100,100 200,150 T400,150" fill="#81c784" opacity="0.6"></path>
-                            <path d="M0,180 Q100,120 200,180 T400,180" fill="#4caf50" opacity="0.4"></path>
-                            <circle cx="300" cy="70" r="30" fill="#ffeb3b" opacity="0.8"></circle>
-                            <path d="M280,120 L300,80 L320,120 Z" fill="#4caf50"></path>
-                            <path d="M260,120 L280,80 L300,120 Z" fill="#4caf50"></path>
-                            <path d="M240,120 L260,80 L280,120 Z" fill="#4caf50"></path>
-                        </svg>
+                         @if ($arts->image)
+                            <img src="{{ asset('storage/' . $arts->image) }}"
+                                alt="{{ $arts->title }}"
+                                class="w-full h-48 object-cover mb-4 rounded">
+                        @else
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m6 12a2 2 0 01-2-2V9a2 2 0 012-2h1">
+                                    </path>
+                                </svg>
+                            </div>
+                        @endif
                     </div>
                     <div class="p-6">
                         <div class="flex items-center gap-1 text-gray-500 text-sm mb-2">
                             <i class="far fa-calendar-alt"></i>
-                            <span>15 Agustus 2023</span>
+                            <span>
+                                {{ $arts->category }} | By {{ $arts->author }} |
+                                {{ \Carbon\Carbon::parse($arts->published_at)->format('M d, Y') }}
+                        </span>
                         </div>
-                        <h3 class="font-poppins font-semibold text-xl mb-2 leading-tight">Program Intensifikasi Lahan Jagung di Gorontalo Utara</h3>
-                        <p class="text-gray-600 text-sm mb-4">Pemerintah
- Provinsi Gorontalo meluncurkan program intensifikasi lahan jagung untuk
- meningkatkan produktivitas pertanian di wilayah utara.</p>
+                        <h3 class="font-poppins font-semibold text-xl mb-2 leading-tight">{{ $arts->title }}</h3>
+                        <p class="text-gray-600 text-sm mb-4">
+                            {{ Str::limit(strip_tags($arts->content), 150) }}
+                        </p>
                         <a href="#" class="text-primary font-semibold text-sm flex items-center gap-1 hover:text-primary-dark transition-colors">
                             Baca selengkapnya
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
                 </div>
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: 0.3s;">
-                    <div class="h-48 bg-green-100 relative">
-                        <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                            <rect width="400" height="200" fill="#e8f5e9"></rect>
-                            <rect x="50" y="50" width="300" height="100" fill="#81c784" opacity="0.3"></rect>
-                            <rect x="70" y="70" width="260" height="60" fill="#4caf50" opacity="0.5"></rect>
-                            <circle cx="200" cy="100" r="30" fill="#2e7d32" opacity="0.7"></circle>
-                            <path d="M180,90 L220,90 L220,110 L180,110 Z" fill="#ffffff"></path>
-                            <path d="M190,80 L210,80 L210,120 L190,120 Z" fill="#ffffff"></path>
-                        </svg>
+                @empty
+                    <div class="col-span-full text-center text-gray-600">
+                        No news articles available.
                     </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-1 text-gray-500 text-sm mb-2">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>28 Juli 2023</span>
-                        </div>
-                        <h3 class="font-poppins font-semibold text-xl mb-2 leading-tight">Pelatihan Petani Kelapa untuk Penggunaan Teknologi GIS</h3>
-                        <p class="text-gray-600 text-sm mb-4">Dinas Pertanian mengadakan pelatihan bagi petani kelapa untuk memahami penggunaan teknologi GIS dalam pengelolaan lahan.</p>
-                        <a href="#" class="text-primary font-semibold text-sm flex items-center gap-1 hover:text-primary-dark transition-colors">
-                            Baca selengkapnya
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden opacity-0 animate-fade-in-up" style="animation-delay: 0.5s;">
-                    <div class="h-48 bg-green-100 relative">
-                        <svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                            <rect width="400" height="200" fill="#e8f5e9"></rect>
-                            <path d="M0,150 C100,50 300,250 400,150" fill="#81c784" opacity="0.4"></path>
-                            <path d="M0,180 C100,80 300,280 400,180" fill="#4caf50" opacity="0.6"></path>
-                            <rect x="100" y="50" width="200" height="80" rx="10" fill="#2e7d32" opacity="0.7"></rect>
-                            <rect x="120" y="70" width="160" height="40" rx="5" fill="#ffffff" opacity="0.9"></rect>
-                            <circle cx="150" cy="90" r="10" fill="#4caf50"></circle>
-                            <circle cx="200" cy="90" r="10" fill="#4caf50"></circle>
-                            <circle cx="250" cy="90" r="10" fill="#4caf50"></circle>
-                        </svg>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-1 text-gray-500 text-sm mb-2">
-                            <i class="far fa-calendar-alt"></i>
-                            <span>5 Juli 2023</span>
-                        </div>
-                        <h3 class="font-poppins font-semibold text-xl mb-2 leading-tight">Pembaruan Data Spasial Lahan Pertanian Selesai Dilakukan</h3>
-                        <p class="text-gray-600 text-sm mb-4">Tim survei telah menyelesaikan pembaruan data spasial untuk 1.245 lahan pertanian di seluruh Provinsi Gorontalo.</p>
-                        <a href="#" class="text-primary font-semibold text-sm flex items-center gap-1 hover:text-primary-dark transition-colors">
-                            Baca selengkapnya
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </section>

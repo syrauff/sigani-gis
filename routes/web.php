@@ -2,12 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PortalController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('main');
-});
-// Route::get('/profile', [Controller::class, 'edit'])->name('profile.edit');
+Route::get('/', [PortalController::class, 'index'])->name('main');
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -18,6 +16,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::Resource('articles', ArticleController::class);
+Route::Resource('article', ArticleController::class);
 
 require __DIR__.'/auth.php';
