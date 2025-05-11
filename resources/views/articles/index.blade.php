@@ -51,19 +51,19 @@
                                 <td class="px-4 py-3 text-sm">
                                     <div class="flex justify-between items-center">
                                         {{-- View --}}
-                                        <a href="{{ route('article.show', $article->id) }}" class="text-gray-600 hover:text-blue-600 flex items-center mx-1 space-x-1">
+                                        <a href="{{ route('article.show', $article->slug) }}" class="text-gray-600 hover:text-blue-600 flex items-center mx-1 space-x-1">
                                             <i class="fas fa-eye"></i>
                                             
                                         </a>
                                         
                                         {{-- Edit --}}
-                                        <a href="{{ route('article.edit', $article->id) }}" class="text-blue-600 hover:text-blue-800 flex items-center mx-1 space-x-1">
+                                        <a href="{{ route('article.edit', $article->slug) }}" class="text-blue-600 hover:text-blue-800 flex items-center mx-1 space-x-1">
                                             <i class="fas fa-edit"></i>
                                             
                                         </a>
 
                                         {{-- Delete --}}
-                                        <form action="{{ route('article.destroy', $article->id) }}" method="POST" onsubmit="return confirm('Are you sure?')" class="inline">
+                                        <form action="{{ route('article.destroy', $article->slug) }}" method="POST" onsubmit="return confirm('Are you sure?')" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-800 flex items-center mx-1 space-x-1">
