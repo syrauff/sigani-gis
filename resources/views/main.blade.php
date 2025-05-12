@@ -184,97 +184,43 @@
                     <table class="w-full data-table">
                         <thead>
                             <tr class="bg-light-gray">
-                                <th class="text-left p-4 font-semibold">Nama Lahan</th>
-                                <th class="text-left p-4 font-semibold">Lokasi</th>
-                                <th class="text-left p-4 font-semibold">Luas (ha)</th>
-                                <th class="text-left p-4 font-semibold hidden md:table-cell">Sumber Data</th>
-                                <th class="text-left p-4 font-semibold">Status</th>
+                                <th class="text-left p-4 font-semibold">No</th>
+                                <th class="text-left p-4 font-semibold">KEACAMATAN</th>
+                                <th class="text-left p-4 font-semibold">Jenis Tanam</th>
+                                <th class="text-left p-4 font-semibold">Luas</th>
+                                <th class="text-left p-4 font-semibold">Kelas</th>
+                                <th class="text-left p-4 font-semibold">Kategori</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {{-- <tbody>
+                            @foreach ($data as $feature)
                             <tr class="hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Kelapa Limboto</a></td>
-                                <td class="p-4 border-b border-gray-200">Limboto, Desa Hutadaa</td>
-                                <td class="p-4 border-b border-gray-200">45.2</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                                <td class="p-4 border-b border-gray-200">1</td>
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">{{ $feature['properties']['NAMOBJ'] ?? '' }}</a></td>
+                                <td class="p-4 border-b border-gray-200">{{ $feature['properties']['J_Tanam'] ?? '' }}</td>
+                                <td class="p-4 border-b border-gray-200">{{ $feature['properties']['Luas'] ?? '' }}</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">{{ $feature['properties']['KELAS'] ?? '' }}</td>
+                                <td class="p-4 border-b border-gray-200">{{ $feature['properties']['KATEGORI'] ?? '' }}</td>
                             </tr>
-                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Sawah Padi Telaga</a></td>
-                                <td class="p-4 border-b border-gray-200">Telaga, Desa Bulila</td>
-                                <td class="p-4 border-b border-gray-200">32.8</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Kementan</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
-                            </tr>
-                            <tr class="hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Jagung Batudaa</a></td>
-                                <td class="p-4 border-b border-gray-200">Batudaa, Desa Iluta</td>
-                                <td class="p-4 border-b border-gray-200">28.5</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Pemda</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-danger">Non-Aktif</span></td>
-                            </tr>
-                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Perkebunan Kelapa Boalemo</a></td>
-                                <td class="p-4 border-b border-gray-200">Boalemo, Desa Dulupi</td>
-                                <td class="p-4 border-b border-gray-200">87.3</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
-                            </tr>
-                            <tr class="hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Lahan Jagung Gorontalo Utara</a></td>
-                                <td class="p-4 border-b border-gray-200">Gorontalo Utara, Desa Bulalo</td>
-                                <td class="p-4 border-b border-gray-200">56.1</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Kementan</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
-                            </tr>
-                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Sawah Bone Bolango</a></td>
-                                <td class="p-4 border-b border-gray-200">Bone Bolango, Desa Toto Utara</td>
-                                <td class="p-4 border-b border-gray-200">22.4</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Pemda</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-danger">Non-Aktif</span></td>
-                            </tr>
-                            <tr class="hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Kelapa Pohuwato</a></td>
-                                <td class="p-4 border-b border-gray-200">Pohuwato, Desa Bumela</td>
-                                <td class="p-4 border-b border-gray-200">65.7</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
-                            </tr>
-                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Lahan Jagung Tilamuta</a></td>
-                                <td class="p-4 border-b border-gray-200">Boalemo, Desa Tilamuta</td>
-                                <td class="p-4 border-b border-gray-200">34.2</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Kementan</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
-                            </tr>
-                            <tr class="hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Perkebunan Padi Kwandang</a></td>
-                                <td class="p-4 border-b border-gray-200">Gorontalo Utara, Desa Kwandang</td>
-                                <td class="p-4 border-b border-gray-200">41.8</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Pemda</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-danger">Non-Aktif</span></td>
-                            </tr>
-                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Jagung Paguyaman</a></td>
-                                <td class="p-4 border-b border-gray-200">Boalemo, Desa Paguyaman</td>
-                                <td class="p-4 border-b border-gray-200">29.6</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
-                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
-                            </tr>
+                            @endforeach
+                        </tbody> --}}
+                        <tbody id="geojson-data">
+                        <!-- Data akan dimuat disini -->
                         </tbody>
                     </table>
                 </div>
-                <div class="p-6 flex justify-center items-center gap-2">
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">
+                    <!-- Pagination Controls -->
+                <div class="p-6 flex justify-center items-center gap-2" id="pagination">
+                    <!-- Tombol navigasi Previous -->
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors" id="prev-btn">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded bg-primary text-white">1</button>
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">2</button>
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">3</button>
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">4</button>
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">5</button>
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">
+
+                    <!-- Tombol Halaman Dinamis -->
+                    <div id="page-buttons" class="flex gap-2"></div>
+
+                    <!-- Tombol navigasi Next -->
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors" id="next-btn">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
