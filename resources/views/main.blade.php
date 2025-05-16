@@ -322,8 +322,8 @@
                     </div>
                 </a>
             @empty
-                <div class="col-span-full text-center text-gray-600">
-                    No news articles available.
+                <div class="col-span-full text-center  text-gray-600">
+                    Tidak Ada Berita Tersedia.
                 </div>
             @endforelse
         </div>
