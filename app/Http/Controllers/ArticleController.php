@@ -91,6 +91,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+      
           $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -128,8 +129,8 @@ class ArticleController extends Controller
             return redirect()->route('article.index')->with('success', 'Article updated successfully.');
         } catch (\Exception $e) {
             return redirect()->route('article.edit', $article->slug)->with('error', 'Failed to update article: ' . $e->getMessage());
+
         }
-    
     }
 
     /**
@@ -137,6 +138,12 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
+        // Hapus gambar dari storage jika ada
+        if ($article->image && Storage::disk('public')->exists($article->image)) {
+            Storage::disk('public')->delete($article->image);
+        }
+
+        // Hapus record dari database
         $article->delete();
         return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
     }

@@ -15,5 +15,10 @@ class Article extends Model
         'author',
         'published_at',
     ];
+
+        public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     
 }

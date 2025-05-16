@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
+        {{-- Leaflet CSS --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="Sistem%20Pemetaan%20Lahan%20Pertanian%20&amp;%20Perkebunan%20Gorontalo_files/css2.css" rel="stylesheet">
     <script src="Sistem%20Pemetaan%20Lahan%20Pertanian%20&amp;%20Perkebunan%20Gorontalo_files/3.4.16"></script>
     <link rel="stylesheet" href="Sistem%20Pemetaan%20Lahan%20Pertanian%20&amp;%20Perkebunan%20Gorontalo_files/all.min.css">
     <script>
+
+        
         tailwind.config = {
             theme: {
                 extend: {
@@ -62,6 +69,48 @@
         }
     </script>
     <style>
+        /* Style map */
+        #mapPer { 
+            height: 600px;
+            width: 1200px;
+            margin: 0 auto;
+            z-index: 1;
+        }
+        .info {
+            padding: 6px 8px;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+            line-height: 1.5;
+        }
+
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .pagination button.disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
+
         /* Custom Styles */
         .ripple {
             position: relative;
@@ -334,6 +383,384 @@ pengelolaan data spasial lahan pertanian.</p>
     </div>
 
     <script>
+        // Handle map
+        const osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            minZoom: 10,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        });
+
+        const osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            minZoom: 10,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a> hosted by <a href="https://openstreetmap.fr/" target="_blank">OpenStreetMap France</a>'
+        });
+
+        const openTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            minZoom: 10,
+            attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        });
+
+        // var map = L.map('mapPer').setView([0.7203877454558969, 122.47458474464645], 10);
+
+        var map = L.map('mapPer', {
+            center: [0.7203877454558969, 122.47458474464645],
+            zoom: 10,
+            layers: [osm]
+        });
+
+        	// Base Layer Opsi
+        const baseLayers = {
+            'OpenStreetMap': osm,
+            'OSM Humanitarian': osmHOT,
+            'OpenTopoMap': openTopoMap
+        };
+
+        const layerControl = L.control.layers(baseLayers, {}, {
+            position: 'bottomleft'
+        }).addTo(map);
+
+        // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // }).addTo(map);
+
+
+        // Control info saat hover
+        const info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info leaflet-control');
+            this.update();
+            return this._div;
+        };
+
+        info.update = function (props) {
+            this._div.innerHTML = `<h4>Info Lahan</h4>` + 
+                (props ? `<b>Kecamatan: ${props.NAMOBJ || 'Tidak diketahui'}</b><br/>Jenis Tanam: ${props.J_Tanam}` : 'Arahkan ke polygon');
+        };
+
+        info.addTo(map);
+
+        // Menyusun pagination dengan tampilan lebih terbatas
+        function renderPagination() {
+            const paginationDiv = document.getElementById('page-buttons');
+            paginationDiv.innerHTML = '';
+
+            const range = 2; // Menampilkan dua halaman sebelumnya dan dua halaman setelahnya
+            const startPage = Math.max(1, currentPage - range); // Halaman pertama yang ditampilkan
+            const endPage = Math.min(totalPages, currentPage + range); // Halaman terakhir yang ditampilkan
+
+            // Tombol "Previous"
+            const prevButton = document.getElementById('prev-btn');
+            prevButton.disabled = currentPage === 1;
+            prevButton.classList.toggle('disabled', currentPage === 1);
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderPage(currentPage);
+                    renderPagination();
+                }
+            };
+
+            // Tombol "Next"
+            const nextButton = document.getElementById('next-btn');
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.classList.toggle('disabled', currentPage === totalPages);
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderPage(currentPage);
+                    renderPagination();
+                }
+            };
+
+            // Tombol halaman dinamis
+            for (let page = startPage; page <= endPage; page++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = page;
+                pageButton.classList.add("w-10", "h-10", "flex", "items-center", "justify-center", "border", "border-gray-300", "rounded", "hover:bg-light-gray", "transition-colors");
+                if (currentPage === page) {
+                    pageButton.classList.add('bg-primary', 'text-white');
+                }
+                pageButton.onclick = () => {
+                    currentPage = page;
+                    renderPage(currentPage);
+                    renderPagination();
+                };
+                paginationDiv.appendChild(pageButton);
+            }
+        }
+
+        const colorMap = {}; // Cache warna berdasarkan kategori
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for(let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function getColorByKategori(kategori) {
+            if (!colorMap[kategori]) {
+                colorMap[kategori] = getRandomColor(); // assign sekali saja
+            }
+            return colorMap[kategori];
+        }
+
+        function geoStyle(feature) {
+            return {
+            fillColor: getColorByKategori(feature.properties.J_Tanam),
+            weight: 1,
+            opacity: 0.5,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.35
+            };
+        }
+
+        // Event saat mouseover, mouseout, click
+        function highlightFeature(e) {
+            const layer = e.target;
+
+            layer.setStyle({
+                weight: 3,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.9
+            });
+
+            layer.bringToFront();
+            info.update(layer.feature.properties);
+        }
+
+        function resetHighlight(e) {
+            geojson.resetStyle(e.target);
+            info.update();
+        }
+
+        function zoomToFeature(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: zoomToFeature
+            });
+        }
+
+        let geojson;
+
+        const legend = L.control({ position: 'bottomright' });
+
+        // Legenda bawah kanan
+        legend.onAdd = function () {
+            const div = L.DomUtil.create('div', 'info legend');
+            div.id = 'legend-box';
+
+            const allValues = new Set();
+
+            geojson.eachLayer(function (layer) {
+                const value = layer.feature.properties.J_Tanam;
+                if (value) {
+                    allValues.add(value);
+                }
+            });
+
+            const uniqueValues = Array.from(allValues).sort();
+            let labels = [];
+
+            for (let value of uniqueValues) {
+                const color = getColorByKategori(value);
+                const safeValue = value.replace(/\s+/g, '_');
+                labels.push(`
+                <input type="checkbox" class="legend-filter" data-value="${value}" checked>
+                <i style="background:${color}"></i> ${value}
+                `);
+            }
+
+            div.innerHTML = `
+                <button id="close-legend" style="float:right; border:none; background:none; cursor:pointer;">❌</button>
+                ${labels.join('<br>')}
+                <button id="show-legend" style="display:none; cursor:pointer;">📌 Tampilkan Jenis Tanam</button>
+            `;
+            return div;
+                };
+            
+            const legendToggle = L.control({ position: 'bottomright' });
+
+            legendToggle.onAdd = function () {
+                const div = L.DomUtil.create('div', 'legend-toggle');
+                div.innerHTML = `<button id="show-legend" style="display:none; cursor:pointer; background: white; padding: 0.5 px;">📌 Tampilkan Jenis Tanam</button>`;
+                return div;
+            };
+                // Load GeoJSON
+            fetch('assets/maps/pertanian.geojson')
+            .then(response => response.json())
+            .then(data => {
+                
+                // Mengatur jumlah data per halaman
+                const itemsPerPage = 10;
+                const totalItems = data.features.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                let currentPage = 1;
+
+                // Menampilkan data pada halaman yang dipilih
+                function renderPage(page) {
+                    const startIndex = (page - 1) * itemsPerPage;
+                    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+
+                    // Mengambil elemen tbody untuk menampilkan data
+                    const tableBody = document.getElementById('geojson-data');
+                    tableBody.innerHTML = '';
+
+                    // Melakukan iterasi untuk setiap feature dalam GeoJSON pada halaman ini
+                    for (let i = startIndex; i < endIndex; i++) {
+                        const feature = data.features[i];
+                        const row = document.createElement('tr');
+                        row.classList.add('hover:bg-green-50', 'transition-colors');
+
+                        const noCell = document.createElement('td');
+                        noCell.classList.add('p-4', 'border-b', 'border-gray-200');
+                        noCell.textContent = i + 1; // Menampilkan urutan
+
+                        const namobjCell = document.createElement('td');
+                        namobjCell.classList.add('p-4', 'border-b', 'border-gray-200');
+                        namobjCell.innerHTML = `<a href="#" class="text-primary font-semibold hover:underline">${feature.properties.NAMOBJ ?? ''}</a>`;
+
+                        const jTanamCell = document.createElement('td');
+                        jTanamCell.classList.add('p-4', 'border-b', 'border-gray-200');
+                        jTanamCell.textContent = feature.properties.J_Tanam ?? '';
+
+                        const luasCell = document.createElement('td');
+                        luasCell.classList.add('p-4', 'border-b', 'border-gray-200');
+                        luasCell.textContent = feature.properties.Luas ?? '';
+
+                        const kelasCell = document.createElement('td');
+                        kelasCell.classList.add('p-4', 'border-b', 'border-gray-200', 'hidden', 'md:table-cell');
+                        kelasCell.textContent = feature.properties.KELAS ?? '';
+
+                        const kategoriCell = document.createElement('td');
+                        kategoriCell.classList.add('p-4', 'border-b', 'border-gray-200');
+                        kategoriCell.textContent = feature.properties.KATEGORI ?? '';
+
+                        // Menambahkan sel ke dalam baris
+                        row.appendChild(noCell);
+                        row.appendChild(namobjCell);
+                        row.appendChild(jTanamCell);
+                        row.appendChild(luasCell);
+                        row.appendChild(kelasCell);
+                        row.appendChild(kategoriCell);
+
+                        // Menambahkan baris ke dalam tabel
+                        tableBody.appendChild(row);
+                    }
+                }
+
+                // Membuat tombol navigasi pagination
+                function renderPagination() {
+                        const paginationDiv = document.getElementById('page-buttons');
+                        paginationDiv.innerHTML = '';
+
+                        const range = 2; // Menampilkan dua halaman sebelumnya dan dua halaman setelahnya
+                        const startPage = Math.max(1, currentPage - range); // Halaman pertama yang ditampilkan
+                        const endPage = Math.min(totalPages, currentPage + range); // Halaman terakhir yang ditampilkan
+
+                        // Tombol "Previous"
+                        const prevButton = document.getElementById('prev-btn');
+                        prevButton.disabled = currentPage === 1;
+                        prevButton.classList.toggle('disabled', currentPage === 1);
+                        prevButton.onclick = () => {
+                            if (currentPage > 1) {
+                                currentPage--;
+                                renderPage(currentPage);
+                                renderPagination();
+                            }
+                        };
+
+                        // Tombol "Next"
+                        const nextButton = document.getElementById('next-btn');
+                        nextButton.disabled = currentPage === totalPages;
+                        nextButton.classList.toggle('disabled', currentPage === totalPages);
+                        nextButton.onclick = () => {
+                            if (currentPage < totalPages) {
+                                currentPage++;
+                                renderPage(currentPage);
+                                renderPagination();
+                            }
+                        };
+
+                        // Tombol halaman dinamis
+                        for (let page = startPage; page <= endPage; page++) {
+                            const pageButton = document.createElement('button');
+                            pageButton.textContent = page;
+                            pageButton.classList.add("w-10", "h-10", "flex", "items-center", "justify-center", "border", "border-gray-300", "rounded", "hover:bg-light-gray", "transition-colors");
+                            if (currentPage === page) {
+                                pageButton.classList.add('bg-primary', 'text-white');
+                            }
+                            pageButton.onclick = () => {
+                                currentPage = page;
+                                renderPage(currentPage);
+                                renderPagination();
+                            };
+                            paginationDiv.appendChild(pageButton);
+                        }
+                }
+
+                // Render halaman pertama
+                    renderPage(currentPage);
+                    renderPagination();
+                
+                geojson = L.geoJSON(data, {
+                    style: geoStyle,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+
+                legend.addTo(map);
+                legendToggle.addTo(map);
+                setTimeout(() => {
+                    const closeBtn = document.getElementById('close-legend');
+                    const showBtn = document.getElementById('show-legend');
+
+                    if (closeBtn) {
+                        closeBtn.onclick = () => {
+                    const legendBox = document.getElementById('legend-box');
+                    if (legendBox) legendBox.style.display = 'none';
+                    if (showBtn) showBtn.style.display = 'block';
+                    };
+                    }
+
+                    if (showBtn) {
+                        showBtn.onclick = () => {
+                        const legendBox = document.getElementById('legend-box');
+                        if (legendBox) legendBox.style.display = 'block';
+                            showBtn.style.display = 'none';
+                        };
+                    }
+                    
+                    // Checkbox event listeners
+                    const checkboxes = document.querySelectorAll('.legend-filter');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', () => {
+                            const selectedValues = Array.from(checkboxes)
+                                .filter(cb => cb.checked)
+                                .map(cb => cb.dataset.value);
+
+                            geojson.eachLayer(layer => {
+                                const val = layer.feature.properties.J_Tanam;
+                                if (selectedValues.includes(val)) {
+                                    layer.setStyle({ fillOpacity: 0.35, opacity: 1 });
+                                } else {
+                                    layer.setStyle({ fillOpacity: 0, opacity: 0 });
+                                }
+                            });
+                        });
+                    });
+                }, 500);
+            })
+            .catch(error => console.error('Error loading GeoJSON:', error));
+
         // DOM Elements
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const mobileMenu = document.getElementById('mobileMenu');
@@ -640,6 +1067,14 @@ pengelolaan data spasial lahan pertanian.</p>
             }
         `;
         document.head.appendChild(style);
+
+        
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93c6e287a5f44c11',t:'MTc0NjY4NTU4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: medium; visibility: hidden;"></iframe>
+
+    <script>
+    (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93c6e287a5f44c11',t:'MTc0NjY4NTU4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+    <iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: medium; visibility: hidden;">
+    </iframe>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </body></html>
