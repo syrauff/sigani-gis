@@ -2,17 +2,46 @@
 @section('title', 'Sistem Pemetaan Lahan Pertanian Perkebunan Gorontalo')
 @section('content')
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-primary to-primary-dark text-white py-20">
-        <div class="container mx-auto px-6 text-center max-w-4xl">
-            <h1 class="font-poppins font-bold text-4xl md:text-5xl mb-4 leading-tight">Sistem Pemetaan Lahan Pertanian &amp; Perkebunan Gorontalo</h1>
+    <!-- Hero Section -->
+    <section class="relative bg-gradient-to-r from-primary to-primary-dark text-white py-20 overflow-hidden w-screen h-screen">
+    <div class="absolute inset-0 w-full h-full bg-green-600 bg-opacity-50">
+        <!-- Carousel Container -->
+        <div class="carousel w-full h-full">
+            <!-- Slide 1 -->
+            <div class="carousel-item w-full h-full absolute opacity-0 transition-opacity duration-1000 ease-in-out">
+                <img src="{{ asset('images/sawah1.png') }}" alt="Agricultural Field" class="w-full h-full object-cover opacity-60">
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-item w-full h-full absolute opacity-0 transition-opacity duration-1000 ease-in-out">
+                <img src="{{ asset('images/sawah.jpg') }}" alt="Plantation" class="w-full h-full object-cover opacity-60">
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-item w-full h-full absolute opacity-0 transition-opacity duration-1000 ease-in-out">
+                <img src="{{ asset('images/kebun_kelapa.png') }}" alt="Farmland" class="w-full h-full object-cover opacity-60">
+            </div>
+        </div>
+        <!-- Navigation Dots -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+            <button class="carousel-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-100"></button>
+            <button class="carousel-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-100"></button>
+            <button class="carousel-dot w-3 h-3 rounded-full bg-white opacity-50 hover:opacity-100"></button>
+        </div>
+    </div>
+
+    <!-- Text Content -->
+    <div class="absolute inset-0 flex items-center justify-center text-center w-screen z-10 px-6">
+        <div>
+            <h1 class="font-poppins font-bold text-4xl md:text-5xl mb-4 leading-tight">Sistem Pemetaan Lahan Pertanian & Perkebunan Gorontalo</h1>
             <p class="text-xl md:text-2xl mb-8 opacity-90">Eksplorasi data spasial lahan terkini berbasis GIS</p>
             <button class="bg-white text-primary px-6 py-3 rounded font-semibold text-lg flex items-center gap-2 mx-auto hover:bg-light-gray transition-colors transform hover:-translate-y-1 hover:shadow-lg transition-all ripple" id="viewMapBtn" style="position: relative; overflow: hidden;">
                 <i class="fas fa-map-marked-alt"></i>
                 Lihat Peta Sekarang
             </button>
         </div>
-    </section>
+    </div>
+</section>
 
+    <!-- Map Section -->
     <!-- Map Section -->
     <section class="py-12 bg-white" id="map">
         {{-- <div class="container mx-auto px-20"> --}}
@@ -184,43 +213,97 @@
                     <table class="w-full data-table">
                         <thead>
                             <tr class="bg-light-gray">
-                                <th class="text-left p-4 font-semibold">No</th>
-                                <th class="text-left p-4 font-semibold">KEACAMATAN</th>
-                                <th class="text-left p-4 font-semibold">Jenis Tanam</th>
-                                <th class="text-left p-4 font-semibold">Luas</th>
-                                <th class="text-left p-4 font-semibold">Kelas</th>
-                                <th class="text-left p-4 font-semibold">Kategori</th>
+                                <th class="text-left p-4 font-semibold">Nama Lahan</th>
+                                <th class="text-left p-4 font-semibold">Lokasi</th>
+                                <th class="text-left p-4 font-semibold">Luas (ha)</th>
+                                <th class="text-left p-4 font-semibold hidden md:table-cell">Sumber Data</th>
+                                <th class="text-left p-4 font-semibold">Status</th>
                             </tr>
                         </thead>
-                        {{-- <tbody>
-                            @foreach ($data as $feature)
+                        <tbody>
                             <tr class="hover:bg-green-50 transition-colors">
-                                <td class="p-4 border-b border-gray-200">1</td>
-                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">{{ $feature['properties']['NAMOBJ'] ?? '' }}</a></td>
-                                <td class="p-4 border-b border-gray-200">{{ $feature['properties']['J_Tanam'] ?? '' }}</td>
-                                <td class="p-4 border-b border-gray-200">{{ $feature['properties']['Luas'] ?? '' }}</td>
-                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">{{ $feature['properties']['KELAS'] ?? '' }}</td>
-                                <td class="p-4 border-b border-gray-200">{{ $feature['properties']['KATEGORI'] ?? '' }}</td>
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Kelapa Limboto</a></td>
+                                <td class="p-4 border-b border-gray-200">Limboto, Desa Hutadaa</td>
+                                <td class="p-4 border-b border-gray-200">45.2</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
                             </tr>
-                            @endforeach
-                        </tbody> --}}
-                        <tbody id="geojson-data">
-                        <!-- Data akan dimuat disini -->
+                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Sawah Padi Telaga</a></td>
+                                <td class="p-4 border-b border-gray-200">Telaga, Desa Bulila</td>
+                                <td class="p-4 border-b border-gray-200">32.8</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Kementan</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Jagung Batudaa</a></td>
+                                <td class="p-4 border-b border-gray-200">Batudaa, Desa Iluta</td>
+                                <td class="p-4 border-b border-gray-200">28.5</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Pemda</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-danger">Non-Aktif</span></td>
+                            </tr>
+                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Perkebunan Kelapa Boalemo</a></td>
+                                <td class="p-4 border-b border-gray-200">Boalemo, Desa Dulupi</td>
+                                <td class="p-4 border-b border-gray-200">87.3</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Lahan Jagung Gorontalo Utara</a></td>
+                                <td class="p-4 border-b border-gray-200">Gorontalo Utara, Desa Bulalo</td>
+                                <td class="p-4 border-b border-gray-200">56.1</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Kementan</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                            </tr>
+                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Sawah Bone Bolango</a></td>
+                                <td class="p-4 border-b border-gray-200">Bone Bolango, Desa Toto Utara</td>
+                                <td class="p-4 border-b border-gray-200">22.4</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Pemda</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-danger">Non-Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Kelapa Pohuwato</a></td>
+                                <td class="p-4 border-b border-gray-200">Pohuwato, Desa Bumela</td>
+                                <td class="p-4 border-b border-gray-200">65.7</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                            </tr>
+                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Lahan Jagung Tilamuta</a></td>
+                                <td class="p-4 border-b border-gray-200">Boalemo, Desa Tilamuta</td>
+                                <td class="p-4 border-b border-gray-200">34.2</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Kementan</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                            </tr>
+                            <tr class="hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Perkebunan Padi Kwandang</a></td>
+                                <td class="p-4 border-b border-gray-200">Gorontalo Utara, Desa Kwandang</td>
+                                <td class="p-4 border-b border-gray-200">41.8</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">Pemda</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-danger">Non-Aktif</span></td>
+                            </tr>
+                            <tr class="bg-light-gray hover:bg-green-50 transition-colors">
+                                <td class="p-4 border-b border-gray-200"><a href="#" class="text-primary font-semibold hover:underline">Kebun Jagung Paguyaman</a></td>
+                                <td class="p-4 border-b border-gray-200">Boalemo, Desa Paguyaman</td>
+                                <td class="p-4 border-b border-gray-200">29.6</td>
+                                <td class="p-4 border-b border-gray-200 hidden md:table-cell">BPN</td>
+                                <td class="p-4 border-b border-gray-200"><span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-success">Aktif</span></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-                    <!-- Pagination Controls -->
-                <div class="p-6 flex justify-center items-center gap-2" id="pagination">
-                    <!-- Tombol navigasi Previous -->
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors" id="prev-btn">
+                <div class="p-6 flex justify-center items-center gap-2">
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-
-                    <!-- Tombol Halaman Dinamis -->
-                    <div id="page-buttons" class="flex gap-2"></div>
-
-                    <!-- Tombol navigasi Next -->
-                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors" id="next-btn">
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded bg-primary text-white">1</button>
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">2</button>
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">3</button>
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">4</button>
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">5</button>
+                    <button class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded hover:bg-light-gray transition-colors">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
@@ -271,8 +354,8 @@
                     </div>
                 </a>
             @empty
-                <div class="col-span-full text-center text-gray-600">
-                    No news articles available.
+                <div class="col-span-full text-center  text-gray-600">
+                    Belum Ada Berita Tersedia
                 </div>
             @endforelse
         </div>
@@ -284,5 +367,73 @@
         </div>
     </div>
 </section>
+
+<!-- JavaScript for Carousel -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const carouselItems = document.querySelectorAll('.carousel-item');
+    const dots = document.querySelectorAll('.carousel-dot');
+    let currentIndex = 0;
+
+    // Show the first slide
+    carouselItems[currentIndex].classList.add('opacity-100');
+    carouselItems[currentIndex].classList.remove('opacity-0');
+    dots[currentIndex].classList.add('opacity-100');
+
+    // Function to switch slides
+    const switchSlide = (index) => {
+        carouselItems[currentIndex].classList.remove('opacity-100');
+        carouselItems[currentIndex].classList.add('opacity-0');
+        dots[currentIndex].classList.remove('opacity-100');
+        dots[currentIndex].classList.add('opacity-50');
+
+        currentIndex = index;
+        carouselItems[currentIndex].classList.add('opacity-100');
+        carouselItems[currentIndex].classList.remove('opacity-0');
+        dots[currentIndex].classList.add('opacity-100');
+        dots[currentIndex].classList.remove('opacity-50');
+    };
+
+    // Auto-slide every 5 seconds
+    const autoSlide = () => {
+        let nextIndex = (currentIndex + 1) % carouselItems.length;
+        switchSlide(nextIndex);
+    };
+
+    let slideInterval = setInterval(autoSlide, 5000);
+
+    // Dot navigation
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            clearInterval(slideInterval);
+            switchSlide(index);
+            slideInterval = setInterval(autoSlide, 5000);
+        });
+    });
+});
+</script>
+
+<!-- CSS for Carousel -->
+<style>
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 1s ease-in-out;
+}
+
+.carousel-dot {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+</style>
 
 @endsection
