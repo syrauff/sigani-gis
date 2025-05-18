@@ -30,6 +30,7 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Author</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Category</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Image</th>
+                    
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Published At</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Action</th>
                         </tr>

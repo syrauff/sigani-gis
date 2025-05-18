@@ -94,24 +94,6 @@
             opacity: 0.7;
         }
 
-        .pagination {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        .pagination button {
-            margin: 0 5px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .pagination button.disabled {
-            background-color: #ddd;
-            cursor: not-allowed;
-        }
-
         /* Custom Styles */
         .ripple {
             position: relative;
@@ -440,56 +422,6 @@ pengelolaan data spasial lahan pertanian.</p>
 
         info.addTo(map);
 
-        // Menyusun pagination dengan tampilan lebih terbatas
-        function renderPagination() {
-            const paginationDiv = document.getElementById('page-buttons');
-            paginationDiv.innerHTML = '';
-
-            const range = 2; // Menampilkan dua halaman sebelumnya dan dua halaman setelahnya
-            const startPage = Math.max(1, currentPage - range); // Halaman pertama yang ditampilkan
-            const endPage = Math.min(totalPages, currentPage + range); // Halaman terakhir yang ditampilkan
-
-            // Tombol "Previous"
-            const prevButton = document.getElementById('prev-btn');
-            prevButton.disabled = currentPage === 1;
-            prevButton.classList.toggle('disabled', currentPage === 1);
-            prevButton.onclick = () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderPage(currentPage);
-                    renderPagination();
-                }
-            };
-
-            // Tombol "Next"
-            const nextButton = document.getElementById('next-btn');
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.classList.toggle('disabled', currentPage === totalPages);
-            nextButton.onclick = () => {
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderPage(currentPage);
-                    renderPagination();
-                }
-            };
-
-            // Tombol halaman dinamis
-            for (let page = startPage; page <= endPage; page++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = page;
-                pageButton.classList.add("w-10", "h-10", "flex", "items-center", "justify-center", "border", "border-gray-300", "rounded", "hover:bg-light-gray", "transition-colors");
-                if (currentPage === page) {
-                    pageButton.classList.add('bg-primary', 'text-white');
-                }
-                pageButton.onclick = () => {
-                    currentPage = page;
-                    renderPage(currentPage);
-                    renderPagination();
-                };
-                paginationDiv.appendChild(pageButton);
-            }
-        }
-
         const colorMap = {}; // Cache warna berdasarkan kategori
 
         function getRandomColor() {
@@ -600,119 +532,6 @@ pengelolaan data spasial lahan pertanian.</p>
             fetch('assets/maps/pertanian.geojson')
             .then(response => response.json())
             .then(data => {
-                
-                // Mengatur jumlah data per halaman
-                const itemsPerPage = 10;
-                const totalItems = data.features.length;
-                const totalPages = Math.ceil(totalItems / itemsPerPage);
-                let currentPage = 1;
-
-                // Menampilkan data pada halaman yang dipilih
-                function renderPage(page) {
-                    const startIndex = (page - 1) * itemsPerPage;
-                    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-
-                    // Mengambil elemen tbody untuk menampilkan data
-                    const tableBody = document.getElementById('geojson-data');
-                    tableBody.innerHTML = '';
-
-                    // Melakukan iterasi untuk setiap feature dalam GeoJSON pada halaman ini
-                    for (let i = startIndex; i < endIndex; i++) {
-                        const feature = data.features[i];
-                        const row = document.createElement('tr');
-                        row.classList.add('hover:bg-green-50', 'transition-colors');
-
-                        const noCell = document.createElement('td');
-                        noCell.classList.add('p-4', 'border-b', 'border-gray-200');
-                        noCell.textContent = i + 1; // Menampilkan urutan
-
-                        const namobjCell = document.createElement('td');
-                        namobjCell.classList.add('p-4', 'border-b', 'border-gray-200');
-                        namobjCell.innerHTML = `<a href="#" class="text-primary font-semibold hover:underline">${feature.properties.NAMOBJ ?? ''}</a>`;
-
-                        const jTanamCell = document.createElement('td');
-                        jTanamCell.classList.add('p-4', 'border-b', 'border-gray-200');
-                        jTanamCell.textContent = feature.properties.J_Tanam ?? '';
-
-                        const luasCell = document.createElement('td');
-                        luasCell.classList.add('p-4', 'border-b', 'border-gray-200');
-                        luasCell.textContent = feature.properties.Luas ?? '';
-
-                        const kelasCell = document.createElement('td');
-                        kelasCell.classList.add('p-4', 'border-b', 'border-gray-200', 'hidden', 'md:table-cell');
-                        kelasCell.textContent = feature.properties.KELAS ?? '';
-
-                        const kategoriCell = document.createElement('td');
-                        kategoriCell.classList.add('p-4', 'border-b', 'border-gray-200');
-                        kategoriCell.textContent = feature.properties.KATEGORI ?? '';
-
-                        // Menambahkan sel ke dalam baris
-                        row.appendChild(noCell);
-                        row.appendChild(namobjCell);
-                        row.appendChild(jTanamCell);
-                        row.appendChild(luasCell);
-                        row.appendChild(kelasCell);
-                        row.appendChild(kategoriCell);
-
-                        // Menambahkan baris ke dalam tabel
-                        tableBody.appendChild(row);
-                    }
-                }
-
-                // Membuat tombol navigasi pagination
-                function renderPagination() {
-                        const paginationDiv = document.getElementById('page-buttons');
-                        paginationDiv.innerHTML = '';
-
-                        const range = 2; // Menampilkan dua halaman sebelumnya dan dua halaman setelahnya
-                        const startPage = Math.max(1, currentPage - range); // Halaman pertama yang ditampilkan
-                        const endPage = Math.min(totalPages, currentPage + range); // Halaman terakhir yang ditampilkan
-
-                        // Tombol "Previous"
-                        const prevButton = document.getElementById('prev-btn');
-                        prevButton.disabled = currentPage === 1;
-                        prevButton.classList.toggle('disabled', currentPage === 1);
-                        prevButton.onclick = () => {
-                            if (currentPage > 1) {
-                                currentPage--;
-                                renderPage(currentPage);
-                                renderPagination();
-                            }
-                        };
-
-                        // Tombol "Next"
-                        const nextButton = document.getElementById('next-btn');
-                        nextButton.disabled = currentPage === totalPages;
-                        nextButton.classList.toggle('disabled', currentPage === totalPages);
-                        nextButton.onclick = () => {
-                            if (currentPage < totalPages) {
-                                currentPage++;
-                                renderPage(currentPage);
-                                renderPagination();
-                            }
-                        };
-
-                        // Tombol halaman dinamis
-                        for (let page = startPage; page <= endPage; page++) {
-                            const pageButton = document.createElement('button');
-                            pageButton.textContent = page;
-                            pageButton.classList.add("w-10", "h-10", "flex", "items-center", "justify-center", "border", "border-gray-300", "rounded", "hover:bg-light-gray", "transition-colors");
-                            if (currentPage === page) {
-                                pageButton.classList.add('bg-primary', 'text-white');
-                            }
-                            pageButton.onclick = () => {
-                                currentPage = page;
-                                renderPage(currentPage);
-                                renderPagination();
-                            };
-                            paginationDiv.appendChild(pageButton);
-                        }
-                }
-
-                // Render halaman pertama
-                    renderPage(currentPage);
-                    renderPagination();
-                
                 geojson = L.geoJSON(data, {
                     style: geoStyle,
                     onEachFeature: onEachFeature
