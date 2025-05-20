@@ -14,7 +14,11 @@
     crossorigin=""></script>
     
     <style>
-        #map { height: 600px; }
+        #mapW { 
+            height: 600px;
+            width: 1200px;
+            margin: 0 auto;
+        }
         .info {
             padding: 6px 8px;
             background: white;
@@ -34,13 +38,13 @@
 </head>
 <body>
 
-    <div id="map"></div>
+    <div id="mapW"></div>
 
     {{-- Leaflet JS --}}
     
 
     <script>
-        var map = L.map('map').setView([0.7203877454558969, 122.47458474464645], 10);
+        var map = L.map('mapW').setView([0.7203877454558969, 122.47458474464645], 10);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -80,7 +84,7 @@
             return colorMap[kategori];
         }
 
-        function style(feature) {
+        function geoStyle(feature) {
             return {
             fillColor: getColorByKategori(feature.properties.J_Tanam),
             weight: 1,
@@ -130,6 +134,8 @@
         // Legenda bawah kanan
         legend.onAdd = function () {
             const div = L.DomUtil.create('div', 'info legend');
+            div.id = 'legend-box';
+
             const allValues = new Set();
 
             geojson.eachLayer(function (layer) {
@@ -144,23 +150,78 @@
 
             for (let value of uniqueValues) {
                 const color = getColorByKategori(value);
-                labels.push(`<i style="background:${color}"></i> ${value}`);
+                const safeValue = value.replace(/\s+/g, '_');
+                labels.push(`
+                <input type="checkbox" class="legend-filter" data-value="${value}" checked>
+                <i style="background:${color}"></i> ${value}
+                `);
             }
 
-            div.innerHTML = labels.join('<br>');
+            div.innerHTML = `
+                <button id="close-legend" style="float:right; border:none; background:none; cursor:pointer;">❌</button>
+                ${labels.join('<br>')}
+                <button id="show-legend" style="display:none; cursor:pointer;">📌 Tampilkan Legend</button>
+            `;
             return div;
                 };
+            
+            const legendToggle = L.control({ position: 'bottomright' });
 
+            legendToggle.onAdd = function () {
+                const div = L.DomUtil.create('div', 'legend-toggle');
+                div.innerHTML = `<button id="show-legend" style="display:none; cursor:pointer;">📌 Tampilkan Legend</button>`;
+                return div;
+            };
                 // Load GeoJSON
             fetch('assets/maps/pertanian.geojson')
             .then(response => response.json())
             .then(data => {
                 geojson = L.geoJSON(data, {
-                    style: style,
+                    style: geoStyle,
                     onEachFeature: onEachFeature
                 }).addTo(map);
 
                 legend.addTo(map);
+                legendToggle.addTo(map);
+                setTimeout(() => {
+                    const closeBtn = document.getElementById('close-legend');
+                    const showBtn = document.getElementById('show-legend');
+
+                    if (closeBtn) {
+                        closeBtn.onclick = () => {
+                    const legendBox = document.getElementById('legend-box');
+                    if (legendBox) legendBox.style.display = 'none';
+                    if (showBtn) showBtn.style.display = 'block';
+                    };
+                    }
+
+                    if (showBtn) {
+                        showBtn.onclick = () => {
+                        const legendBox = document.getElementById('legend-box');
+                        if (legendBox) legendBox.style.display = 'block';
+                            showBtn.style.display = 'none';
+                        };
+                    }
+                    
+                    // Checkbox event listeners
+                    const checkboxes = document.querySelectorAll('.legend-filter');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', () => {
+                            const selectedValues = Array.from(checkboxes)
+                                .filter(cb => cb.checked)
+                                .map(cb => cb.dataset.value);
+
+                            geojson.eachLayer(layer => {
+                                const val = layer.feature.properties.J_Tanam;
+                                if (selectedValues.includes(val)) {
+                                    layer.setStyle({ fillOpacity: 0.35, opacity: 1 });
+                                } else {
+                                    layer.setStyle({ fillOpacity: 0, opacity: 0 });
+                                }
+                            });
+                        });
+                    });
+                }, 500);
             })
             .catch(error => console.error('Error loading GeoJSON:', error));
     </script>
